@@ -1,0 +1,45 @@
+if (!require("pacman")) install.packages("pacman")
+pacman::p_load(tidyverse, ggplot2, dplyr, lubridate, stringr, readxl, data.table, gdata)
+
+data96 <- readRDS("data/output/HCRIS_Data_v1996.rds")
+data10 <- readRDS("data/output/HCRIS_Data_v2010.rds")
+data10 <- select(data10, -hvbp_payment, -hrrp_payment)
+#print(colnames(data10))
+
+data=rbind(data96, data10)
+
+print(colnames(data))
+# Read in data into a sorted table
+table <- data %>%
+  group_by(year, provider_number) %>%
+  summarise(num_reports = n())
+
+# Filter groups where the count of reports is greater than 1
+multiple_reports <- table %>%
+  filter(num_reports > 1)
+
+# Count the number of unique hospitals in those groups
+num_hospitals_multiple_reports <- multiple_reports %>%
+  group_by(year) %>%
+  summarise(num_hospitals = n_distinct(provider_number))
+
+# Print the number of hospitals with multiple reports in each year
+distincthost <- n_distinct(data$provider_number)
+
+print(num_hospitals_multiple_reports)
+ggplot(num_hospitals_multiple_reports, aes(x = year, y = num_hospitals))
+
+data %>% 
+  ggplot(aes(x = year, y = tot_charges)) +
+  geom_jitter(alpha = .05) +
+  geom_violin(alpha = .9, draw_quantiles = c(0.5))
+
+
+
+discount_factor = 1-data$tot_discounts/data$tot_charges
+price_num = (data$ip_charges + data$icu_charges + data$ancillary_charges)*data$discount_factor - data$tot_mcare_payment
+price_denom = data$tot_discharges - data$mcare_discharges
+price = price_num/price_denom
+
+
+save.image("analysis/Hwk2_workspace.Rdata")

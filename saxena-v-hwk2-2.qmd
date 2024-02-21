@@ -1,0 +1,55 @@
+---
+title: "Homework 2"
+author: "Varun Saxena"
+format:
+  pdf:
+    output-file: "saxena-v-hwk2-1"
+    output-ext:  "pdf"
+    header-includes:
+      - \usepackage{float}
+      - \floatplacement{table}{H}
+---
+
+Repository: https://github.com/varunsaxena2/saxena-v-hwk2-2/tree/main
+
+\noindent 1. Here is the line graph with the number of hospitals filing multiple reports per year
+```{r}
+#| echo: false
+
+if (!require("pacman")) install.packages("pacman")
+pacman::p_load(tidyverse, ggplot2, dplyr, lubridate, readr, readxl, hrbrthemes, fixest,
+               scales, gganimate, gapminder, gifski, png, tufte, plotly, OECD,
+               ggrepel, survey, foreign, devtools, pdftools, kableExtra, modelsummary,
+               kableExtra)
+
+library(knitr)
+#library(ggbeeswarm)
+
+load("Hwk2_workspace.Rdata")
+
+ggplot(num_hospitals_multiple_reports, aes(x = year, y = num_hospitals)) +
+  geom_line() + 
+  labs(x = "Year", y = "Number of Hospitals", title = "Number of Hospitals with Multiple Reports")
+```
+
+\newpage
+\noindent 2. The number of unique hospitals based on the hospital ID is `r distincthost`.
+
+\newpage
+\noindent 3. 
+
+```{r}
+#|echo: false
+data %>% 
+  ggplot(aes(x = year, y = tot_charges)) +
+  geom_jitter(alpha = 0.2) +
+  geom_violin(alpha = 0.1, draw_quantiles = c(0.1))
+
+
+```
+
+\newpage
+\noindent 4. 
+
+\newpage
+\noindent 10. I had a difficult time reading in the data and getting it all to download, so I was only able to get through question 1. I also have no experience with R outside of Homework 1, so figuring out how the ggplots work in conjunction with Quarto is an ongoing learning process.
